@@ -1,0 +1,12 @@
+syntax = "proto3";
+option java_package = "com.tutorial.kafka.proto";
+option java_outer_classname = "AccessLogProto";
+
+// 消息结构定义
+message AccessLog {
+  string ip = 1;
+  string time = 2;
+  string type = 3;
+  string api = 4;
+  string num = 5;
+}
