@@ -1,2 +1,4 @@
 .idea
 target
+flink-dw/target
+flink-k8s/target

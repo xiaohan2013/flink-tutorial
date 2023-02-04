@@ -4,14 +4,20 @@
 		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
-	<groupId>org.example</groupId>
+	<groupId>org.xiaozhu</groupId>
 	<artifactId>flink-tutorials</artifactId>
+	<packaging>pom</packaging>
 	<version>1.0-SNAPSHOT</version>
+	<modules>
+		<module>flink-k8s</module>
+		<module>flink-dw</module>
+	</modules>
 
 	<properties>
 		<maven.compiler.source>8</maven.compiler.source>
 		<maven.compiler.target>8</maven.compiler.target>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<maven.compiler.encoding>UTF-8</maven.compiler.encoding>
 		<scala.macros.version>2.1.1</scala.macros.version>
 		<!-- Default scala versions, must be overwritten by build profiles, so we set something
 		invalid here -->
@@ -21,338 +27,350 @@
 		<log4j.version>2.17.1</log4j.version>
 		<protobuf.version>3.21.2</protobuf.version>
 		<grpc.version>1.50.2</grpc.version>
+		<flink.version>1.15.0</flink.version>
+		<sprint.version>5.1.8.RELEASE</sprint.version>
 		<os.detected.classifier>windows-x86_64</os.detected.classifier>
 	</properties>
 
-	<dependencies>
-		<!-- https://mvnrepository.com/artifact/org.apache.flink/flink-core -->
-<!--		<dependency>-->
-<!--			<groupId>org.apache.flink</groupId>-->
-<!--			<artifactId>flink-core</artifactId>-->
-<!--			<version>1.15.0</version>-->
-<!--		</dependency>-->
-		<!-- https://mvnrepository.com/artifact/org.apache.flink/flink-streaming-java -->
-		<dependency>
-			<groupId>org.apache.flink</groupId>
-			<artifactId>flink-streaming-java</artifactId>
-			<version>1.15.0</version>
-		</dependency>
-		<!-- https://mvnrepository.com/artifact/org.apache.flink/flink-clients -->
-		<dependency>
-			<groupId>org.apache.flink</groupId>
-			<artifactId>flink-clients</artifactId>
-			<version>1.15.0</version>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.flink</groupId>
-			<artifactId>flink-metrics-core</artifactId>
-			<version>1.15.0</version>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.flink</groupId>
-			<artifactId>flink-metrics-prometheus</artifactId>
-			<version>1.15.0</version>
-		</dependency>
-		<!-- https://mvnrepository.com/artifact/org.apache.flink/flink-runtime -->
-		<dependency>
-			<groupId>org.apache.flink</groupId>
-			<artifactId>flink-runtime</artifactId>
-			<version>1.15.0</version>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.flink</groupId>
-			<artifactId>flink-runtime-web</artifactId>
-			<version>1.15.0</version>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.flink</groupId>
-			<artifactId>flink-rpc-akka-loader</artifactId>
-			<version>1.15.0</version>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.flink</groupId>
-			<artifactId>flink-table-common</artifactId>
-			<version>1.15.0</version>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.flink</groupId>
-			<artifactId>flink-table-api-java</artifactId>
-			<version>1.15.0</version>
-		</dependency>
-<!--		Combine Table API and DataStream API -->
-		<dependency>
-			<groupId>org.apache.flink</groupId>
-			<artifactId>flink-table-api-java-bridge</artifactId>
-			<version>1.15.0</version>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.flink</groupId>
-			<artifactId>flink-table-planner_2.12</artifactId>
-			<version>1.15.0</version>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.flink</groupId>
-			<artifactId>flink-connector-base</artifactId>
-			<version>1.15.0</version>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.flink</groupId>
-			<artifactId>flink-connector-kafka</artifactId>
-			<version>1.15.0</version>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.flink</groupId>
-			<artifactId>flink-connector-jdbc</artifactId>
-			<version>1.15.0</version>
-		</dependency>
-		<dependency>
-			<groupId>org.scala-lang</groupId>
-			<artifactId>scala-reflect</artifactId>
-			<version>${scala.version}</version>
-		</dependency>
+	<dependencyManagement>
+		<dependencies>
+			<!-- https://mvnrepository.com/artifact/org.apache.flink/flink-core -->
+	<!--		<dependency>-->
+	<!--			<groupId>org.apache.flink</groupId>-->
+	<!--			<artifactId>flink-core</artifactId>-->
+	<!--			<version>1.15.0</version>-->
+	<!--		</dependency>-->
+			<!-- https://mvnrepository.com/artifact/org.apache.flink/flink-streaming-java -->
+			<dependency>
+				<groupId>org.apache.flink</groupId>
+				<artifactId>flink-streaming-java</artifactId>
+				<version>${flink.version}</version>
+			</dependency>
+			<!-- https://mvnrepository.com/artifact/org.apache.flink/flink-clients -->
+			<dependency>
+				<groupId>org.apache.flink</groupId>
+				<artifactId>flink-clients</artifactId>
+				<version>${flink.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.apache.flink</groupId>
+				<artifactId>flink-metrics-core</artifactId>
+				<version>${flink.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.apache.flink</groupId>
+				<artifactId>flink-metrics-prometheus</artifactId>
+				<version>${flink.version}</version>
+			</dependency>
+			<!-- https://mvnrepository.com/artifact/org.apache.flink/flink-runtime -->
+			<dependency>
+				<groupId>org.apache.flink</groupId>
+				<artifactId>flink-runtime</artifactId>
+				<version>${flink.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.apache.flink</groupId>
+				<artifactId>flink-runtime-web</artifactId>
+				<version>${flink.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.apache.flink</groupId>
+				<artifactId>flink-rpc-akka-loader</artifactId>
+				<version>${flink.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.apache.flink</groupId>
+				<artifactId>flink-table-common</artifactId>
+				<version>${flink.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.apache.flink</groupId>
+				<artifactId>flink-table-api-java</artifactId>
+				<version>${flink.version}</version>
+			</dependency>
+	<!--		Combine Table API and DataStream API -->
+			<dependency>
+				<groupId>org.apache.flink</groupId>
+				<artifactId>flink-table-api-java-bridge</artifactId>
+				<version>${flink.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.apache.flink</groupId>
+				<artifactId>flink-table-planner_2.12</artifactId>
+				<version>${flink.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.apache.flink</groupId>
+				<artifactId>flink-connector-base</artifactId>
+				<version>${flink.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.apache.flink</groupId>
+				<artifactId>flink-connector-kafka</artifactId>
+				<version>${flink.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.apache.flink</groupId>
+				<artifactId>flink-connector-jdbc</artifactId>
+				<version>${flink.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.scala-lang</groupId>
+				<artifactId>scala-reflect</artifactId>
+				<version>${scala.version}</version>
+			</dependency>
 
-		<dependency>
-			<groupId>org.scala-lang</groupId>
-			<artifactId>scala-library</artifactId>
-			<version>${scala.version}</version>
-		</dependency>
+			<dependency>
+				<groupId>org.scala-lang</groupId>
+				<artifactId>scala-library</artifactId>
+				<version>${scala.version}</version>
+			</dependency>
 
-		<dependency>
-			<groupId>org.scala-lang</groupId>
-			<artifactId>scala-compiler</artifactId>
-			<version>${scala.version}</version>
-		</dependency>
+			<dependency>
+				<groupId>org.scala-lang</groupId>
+				<artifactId>scala-compiler</artifactId>
+				<version>${scala.version}</version>
+			</dependency>
 
-		<dependency>
-			<groupId>org.scalatest</groupId>
-			<artifactId>scalatest_${scala.binary.version}</artifactId>
-			<version>3.0.0</version>
-			<scope>test</scope>
-		</dependency>
+			<dependency>
+				<groupId>org.scalatest</groupId>
+				<artifactId>scalatest_${scala.binary.version}</artifactId>
+				<version>3.0.0</version>
+				<scope>test</scope>
+			</dependency>
 
-		<dependency>
-			<groupId>org.apache.logging.log4j</groupId>
-			<artifactId>log4j-slf4j-impl</artifactId>
-			<version>${log4j.version}</version>
-		</dependency>
+			<dependency>
+				<groupId>org.apache.logging.log4j</groupId>
+				<artifactId>log4j-slf4j-impl</artifactId>
+				<version>${log4j.version}</version>
+			</dependency>
 
-		<dependency>
-			<groupId>org.apache.logging.log4j</groupId>
-			<artifactId>log4j-api</artifactId>
-			<version>${log4j.version}</version>
-		</dependency>
+			<dependency>
+				<groupId>org.apache.logging.log4j</groupId>
+				<artifactId>log4j-api</artifactId>
+				<version>${log4j.version}</version>
+			</dependency>
 
-		<dependency>
-			<groupId>org.apache.logging.log4j</groupId>
-			<artifactId>log4j-core</artifactId>
-			<version>${log4j.version}</version>
-		</dependency>
+			<dependency>
+				<groupId>org.apache.logging.log4j</groupId>
+				<artifactId>log4j-core</artifactId>
+				<version>${log4j.version}</version>
+			</dependency>
 
-		<dependency>
-			<!-- API bridge between log4j 1 and 2 -->
-			<groupId>org.apache.logging.log4j</groupId>
-			<artifactId>log4j-1.2-api</artifactId>
-			<version>${log4j.version}</version>
-		</dependency>
+			<dependency>
+				<!-- API bridge between log4j 1 and 2 -->
+				<groupId>org.apache.logging.log4j</groupId>
+				<artifactId>log4j-1.2-api</artifactId>
+				<version>${log4j.version}</version>
+			</dependency>
 
-		<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>slf4j-api</artifactId>
-			<version>${slf4j.version}</version>
-		</dependency>
+			<dependency>
+				<groupId>org.slf4j</groupId>
+				<artifactId>slf4j-api</artifactId>
+				<version>${slf4j.version}</version>
+			</dependency>
 
-		<dependency>
-			<groupId>org.junit.jupiter</groupId>
-			<artifactId>junit-jupiter</artifactId>
-			<version>5.8.1</version>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.junit.platform</groupId>
-			<artifactId>junit-platform-runner</artifactId>
-			<version>1.8.1</version>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.junit.platform</groupId>
-			<artifactId>junit-platform-launcher</artifactId>
-			<version>1.8.1</version>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.junit.platform</groupId>
-			<artifactId>junit-platform-console-standalone</artifactId>
-			<version>1.8.1</version>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.testng</groupId>
-			<artifactId>testng</artifactId>
-			<version>6.10</version>
-			<scope>compile</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.roaringbitmap</groupId>
-			<artifactId>RoaringBitmap</artifactId>
-			<version>0.9.21</version>
-		</dependency>
-		<dependency>
-			<groupId>org.redisson</groupId>
-			<artifactId>redisson</artifactId>
-			<version>3.11.6</version>
-		</dependency>
-		<dependency>
-			<groupId>com.alibaba</groupId>
-			<artifactId>druid</artifactId>
-			<version>1.2.3</version>
-		</dependency>
-		<dependency>
-			<groupId>mysql</groupId>
-			<artifactId>mysql-connector-java</artifactId>
-			<version>8.0.21</version>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.httpcomponents</groupId>
-			<artifactId>httpcore</artifactId>
-			<version>4.4.10</version>
-		</dependency>
+			<dependency>
+				<groupId>org.junit.jupiter</groupId>
+				<artifactId>junit-jupiter</artifactId>
+				<version>5.8.1</version>
+				<scope>test</scope>
+			</dependency>
+			<dependency>
+				<groupId>org.junit.platform</groupId>
+				<artifactId>junit-platform-runner</artifactId>
+				<version>1.8.1</version>
+				<scope>test</scope>
+			</dependency>
+			<dependency>
+				<groupId>org.junit.platform</groupId>
+				<artifactId>junit-platform-launcher</artifactId>
+				<version>1.8.1</version>
+				<scope>test</scope>
+			</dependency>
+			<dependency>
+				<groupId>org.junit.platform</groupId>
+				<artifactId>junit-platform-console-standalone</artifactId>
+				<version>1.8.1</version>
+				<scope>test</scope>
+			</dependency>
+			<dependency>
+				<groupId>org.testng</groupId>
+				<artifactId>testng</artifactId>
+				<version>6.10</version>
+				<scope>compile</scope>
+			</dependency>
+			<dependency>
+				<groupId>org.roaringbitmap</groupId>
+				<artifactId>RoaringBitmap</artifactId>
+				<version>0.9.21</version>
+			</dependency>
+			<dependency>
+				<groupId>org.redisson</groupId>
+				<artifactId>redisson</artifactId>
+				<version>3.11.6</version>
+			</dependency>
+			<dependency>
+				<groupId>com.alibaba</groupId>
+				<artifactId>druid</artifactId>
+				<version>1.2.3</version>
+			</dependency>
+			<dependency>
+				<groupId>mysql</groupId>
+				<artifactId>mysql-connector-java</artifactId>
+				<version>8.0.21</version>
+			</dependency>
+			<dependency>
+				<groupId>org.apache.httpcomponents</groupId>
+				<artifactId>httpcore</artifactId>
+				<version>4.4.10</version>
+			</dependency>
 
-		<!-- https://mvnrepository.com/artifact/org.apache.httpcomponents/httpclient -->
-		<dependency>
-			<groupId>org.apache.httpcomponents</groupId>
-			<artifactId>httpclient</artifactId>
-			<version>4.5.6</version>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.httpcomponents</groupId>
-			<artifactId>httpcore-nio</artifactId>
-			<version>4.4.5</version>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.httpcomponents</groupId>
-			<artifactId>httpasyncclient</artifactId>
-			<version>4.1.2</version>
-		</dependency>
-		<dependency>
-			<groupId>com.alibaba</groupId>
-			<artifactId>fastjson</artifactId>
-			<version>1.2.32</version>
-		</dependency>
-		<!-- https://mvnrepository.com/artifact/com.ververica/flink-connector-mysql-cdc -->
-		<dependency>
-			<groupId>com.ververica</groupId>
-			<artifactId>flink-connector-mysql-cdc</artifactId>
-			<version>2.2.1</version>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.flink</groupId>
-			<artifactId>flink-clients</artifactId>
-			<version>1.15.0</version>
-		</dependency>
+			<!-- https://mvnrepository.com/artifact/org.apache.httpcomponents/httpclient -->
+			<dependency>
+				<groupId>org.apache.httpcomponents</groupId>
+				<artifactId>httpclient</artifactId>
+				<version>4.5.6</version>
+			</dependency>
+			<dependency>
+				<groupId>org.apache.httpcomponents</groupId>
+				<artifactId>httpcore-nio</artifactId>
+				<version>4.4.5</version>
+			</dependency>
+			<dependency>
+				<groupId>org.apache.httpcomponents</groupId>
+				<artifactId>httpasyncclient</artifactId>
+				<version>4.1.2</version>
+			</dependency>
+			<dependency>
+				<groupId>com.alibaba</groupId>
+				<artifactId>fastjson</artifactId>
+				<version>1.2.32</version>
+			</dependency>
+			<!-- https://mvnrepository.com/artifact/com.ververica/flink-connector-mysql-cdc -->
+			<dependency>
+				<groupId>com.ververica</groupId>
+				<artifactId>flink-connector-mysql-cdc</artifactId>
+				<version>2.2.1</version>
+			</dependency>
+			<dependency>
+				<groupId>org.apache.flink</groupId>
+				<artifactId>flink-clients</artifactId>
+				<version>1.15.0</version>
+			</dependency>
 
-		<!-- https://mvnrepository.com/artifact/org.apache.flink/flink-connector-kafka-0.10 -->
-		<dependency>
-			<groupId>org.apache.flink</groupId>
-			<artifactId>flink-sql-connector-kafka</artifactId>
-			<version>1.15.0</version>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.flink</groupId>
-			<artifactId>flink-connector-jdbc</artifactId>
-			<version>1.15.0</version>
-		</dependency>
+			<!-- https://mvnrepository.com/artifact/org.apache.flink/flink-connector-kafka-0.10 -->
+			<dependency>
+				<groupId>org.apache.flink</groupId>
+				<artifactId>flink-sql-connector-kafka</artifactId>
+				<version>1.15.0</version>
+			</dependency>
+			<dependency>
+				<groupId>org.apache.flink</groupId>
+				<artifactId>flink-connector-jdbc</artifactId>
+				<version>1.15.0</version>
+			</dependency>
 
-		<dependency>
-			<groupId>org.apache.flink</groupId>
-			<artifactId>flink-sql-connector-hive-2.2.0_2.12</artifactId>
-			<version>1.15.0</version>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.flink</groupId>
-			<artifactId>flink-statebackend-rocksdb</artifactId>
-			<version>1.15.0</version>
-		</dependency>
-		<!-- https://mvnrepository.com/artifact/org.apache.commons/commons-lang3 -->
-		<dependency>
-			<groupId>org.apache.commons</groupId>
-			<artifactId>commons-lang3</artifactId>
-			<version>3.12.0</version>
-		</dependency>
+			<dependency>
+				<groupId>org.apache.flink</groupId>
+				<artifactId>flink-sql-connector-hive-2.2.0_2.12</artifactId>
+				<version>1.15.0</version>
+			</dependency>
+			<dependency>
+				<groupId>org.apache.flink</groupId>
+				<artifactId>flink-statebackend-rocksdb</artifactId>
+				<version>1.15.0</version>
+			</dependency>
+			<!-- https://mvnrepository.com/artifact/org.apache.commons/commons-lang3 -->
+			<dependency>
+				<groupId>org.apache.commons</groupId>
+				<artifactId>commons-lang3</artifactId>
+				<version>3.12.0</version>
+			</dependency>
 
-		<!-- Hive Dependency -->
-<!--		<dependency>-->
-<!--			<groupId>org.apache.hive</groupId>-->
-<!--			<artifactId>hive-exec</artifactId>-->
-<!--			<version>2.2.0</version>-->
-<!--		</dependency>-->
-<!--		<dependency>-->
-<!--			<groupId>org.apache.hadoop</groupId>-->
-<!--			<artifactId>hadoop-mapreduce-client-core</artifactId>-->
-<!--			<version>2.7.2</version>-->
-<!--		</dependency>-->
-<!--		<dependency>-->
-<!--			<groupId>org.apache.hadoop</groupId>-->
-<!--			<artifactId>hadoop-common</artifactId>-->
-<!--			<version>2.7.2</version>-->
-<!--		</dependency>-->
-<!--		<dependency>-->
-<!--			<groupId>org.apache.hadoop</groupId>-->
-<!--			<artifactId>hadoop-mapreduce-client-common</artifactId>-->
-<!--			<version>2.7.2</version>-->
-<!--		</dependency>-->
-<!--		<dependency>-->
-<!--			<groupId>org.apache.hadoop</groupId>-->
-<!--			<artifactId>hadoop-mapreduce-client-jobclient</artifactId>-->
-<!--			<version>2.7.2</version>-->
-<!--		</dependency>-->
-<!--		<dependency>-->
-<!--			<groupId>org.apache.hadoop</groupId>-->
-<!--			<artifactId>hadoop-hdfs</artifactId>-->
-<!--			<version>2.7.2</version>-->
-<!--		</dependency>-->
+			<!-- Hive Dependency -->
+	<!--		<dependency>-->
+	<!--			<groupId>org.apache.hive</groupId>-->
+	<!--			<artifactId>hive-exec</artifactId>-->
+	<!--			<version>2.2.0</version>-->
+	<!--		</dependency>-->
+	<!--		<dependency>-->
+	<!--			<groupId>org.apache.hadoop</groupId>-->
+	<!--			<artifactId>hadoop-mapreduce-client-core</artifactId>-->
+	<!--			<version>2.7.2</version>-->
+	<!--		</dependency>-->
+	<!--		<dependency>-->
+	<!--			<groupId>org.apache.hadoop</groupId>-->
+	<!--			<artifactId>hadoop-common</artifactId>-->
+	<!--			<version>2.7.2</version>-->
+	<!--		</dependency>-->
+	<!--		<dependency>-->
+	<!--			<groupId>org.apache.hadoop</groupId>-->
+	<!--			<artifactId>hadoop-mapreduce-client-common</artifactId>-->
+	<!--			<version>2.7.2</version>-->
+	<!--		</dependency>-->
+	<!--		<dependency>-->
+	<!--			<groupId>org.apache.hadoop</groupId>-->
+	<!--			<artifactId>hadoop-mapreduce-client-jobclient</artifactId>-->
+	<!--			<version>2.7.2</version>-->
+	<!--		</dependency>-->
+	<!--		<dependency>-->
+	<!--			<groupId>org.apache.hadoop</groupId>-->
+	<!--			<artifactId>hadoop-hdfs</artifactId>-->
+	<!--			<version>2.7.2</version>-->
+	<!--		</dependency>-->
 
-		<dependency>
-			<groupId>io.grpc</groupId>
-			<artifactId>grpc-protobuf</artifactId>
-			<version>${grpc.version}</version>
-		</dependency>
+			<dependency>
+				<groupId>io.grpc</groupId>
+				<artifactId>grpc-protobuf</artifactId>
+				<version>${grpc.version}</version>
+			</dependency>
 
-		<dependency>
-			<groupId>com.google.protobuf</groupId>
-			<artifactId>protobuf-java</artifactId>
-			<version>${protobuf.version}</version>
-		</dependency>
+			<dependency>
+				<groupId>com.google.protobuf</groupId>
+				<artifactId>protobuf-java</artifactId>
+				<version>${protobuf.version}</version>
+			</dependency>
 
-		<dependency>
-			<groupId>com.twitter</groupId>
-			<artifactId>chill-protobuf</artifactId>
-			<version>0.7.6</version>
-			<!-- exclusions for dependency conversion -->
-			<exclusions>
-				<exclusion>
-					<groupId>com.esotericsoftware.kryo</groupId>
-					<artifactId>kryo</artifactId>
-				</exclusion>
-			</exclusions>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-beans</artifactId>
-			<version>5.1.8.RELEASE</version>
-		</dependency>
-		<dependency>
-			<groupId>org.projectlombok</groupId>
-			<artifactId>lombok</artifactId>
-			<version>1.18.22</version>
-			<scope>compile</scope>
-		</dependency>
-	</dependencies>
+			<dependency>
+				<groupId>com.twitter</groupId>
+				<artifactId>chill-protobuf</artifactId>
+				<version>0.7.6</version>
+				<!-- exclusions for dependency conversion -->
+				<exclusions>
+					<exclusion>
+						<groupId>com.esotericsoftware.kryo</groupId>
+						<artifactId>kryo</artifactId>
+					</exclusion>
+				</exclusions>
+			</dependency>
+			<dependency>
+				<groupId>org.springframework</groupId>
+				<artifactId>spring-beans</artifactId>
+				<version>${sprint.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.projectlombok</groupId>
+				<artifactId>lombok</artifactId>
+				<version>1.18.22</version>
+				<scope>compile</scope>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
 
 	<build>
+		<extensions>
+			<extension>
+				<groupId>kr.motd.maven</groupId>
+				<artifactId>os-maven-plugin</artifactId>
+				<version>1.7.0</version>
+			</extension>
+		</extensions>
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-enforcer-plugin</artifactId>
+				<version>3.2.1</version>
 				<executions>
 					<execution>
 						<id>dependency-convergence</id>
@@ -364,46 +382,6 @@
 						</configuration>
 					</execution>
 				</executions>
-			</plugin>
-
-			<!-- Scala Compiler -->
-			<plugin>
-				<groupId>net.alchim31.maven</groupId>
-				<artifactId>scala-maven-plugin</artifactId>
-				<executions>
-					<!-- Run scala compiler in the process-resources phase, so that dependencies on
-						scala classes can be resolved later in the (Java) compile phase -->
-					<execution>
-						<id>scala-compile-first</id>
-						<phase>process-resources</phase>
-						<goals>
-							<goal>compile</goal>
-						</goals>
-					</execution>
-
-					<!-- Run scala compiler in the process-test-resources phase, so that dependencies on
-						 scala classes can be resolved later in the (Java) test-compile phase -->
-					<execution>
-						<id>scala-test-compile</id>
-						<phase>process-test-resources</phase>
-						<goals>
-							<goal>testCompile</goal>
-						</goals>
-					</execution>
-				</executions>
-				<configuration>
-					<jvmArgs>
-						<jvmArg>-Xms128m</jvmArg>
-						<jvmArg>-Xmx512m</jvmArg>
-					</jvmArgs>
-					<compilerPlugins combine.children="append">
-						<compilerPlugin>
-							<groupId>org.scalamacros</groupId>
-							<artifactId>paradise_${scala.version}</artifactId>
-							<version>${scala.macros.version}</version>
-						</compilerPlugin>
-					</compilerPlugins>
-				</configuration>
 			</plugin>
 
 			<!-- Eclipse Integration -->
@@ -435,108 +413,37 @@
 				</configuration>
 			</plugin>
 
-			<!-- Adding scala source directories to build path -->
-			<plugin>
-				<groupId>org.codehaus.mojo</groupId>
-				<artifactId>build-helper-maven-plugin</artifactId>
-				<executions>
-					<!-- Add src/main/scala to eclipse build path -->
-					<execution>
-						<id>add-source</id>
-						<phase>generate-sources</phase>
-						<goals>
-							<goal>add-source</goal>
-						</goals>
-						<configuration>
-							<sources>
-								<source>src/main/scala</source>
-							</sources>
-						</configuration>
-					</execution>
-					<!-- Add src/test/scala to eclipse build path -->
-					<execution>
-						<id>add-test-source</id>
-						<phase>generate-test-sources</phase>
-						<goals>
-							<goal>add-test-source</goal>
-						</goals>
-						<configuration>
-							<sources>
-								<source>src/test/scala</source>
-							</sources>
-						</configuration>
-					</execution>
-				</executions>
-			</plugin>
-
-			<!-- Scala Code Style, most of the configuration done via plugin management -->
-			<plugin>
-				<groupId>org.scalastyle</groupId>
-				<artifactId>scalastyle-maven-plugin</artifactId>
-				<configuration>
-					<configLocation>${project.basedir}/../tools/maven/scalastyle-config.xml</configLocation>
-				</configuration>
-			</plugin>
-
-			<!-- activate API compatibility checks -->
-			<plugin>
-				<groupId>com.github.siom79.japicmp</groupId>
-				<artifactId>japicmp-maven-plugin</artifactId>
-				<configuration>
-					<parameter>
-						<excludes combine.children="append">
-							<!-- Exclude generated classes from api compatibility checks -->
-							<exclude>*$$$$anon$$*</exclude>
-
-							<!-- Ignore method which was created automatically by Scala for default value calculation.
-							Can be removed once https://github.com/siom79/japicmp/issues/176 will be fixed -->
-							<exclude>org.apache.flink.streaming.api.scala.DataStream#iterate\$default\$3()</exclude>
-							<exclude>org.apache.flink.streaming.api.scala.DataStream#assignTimestamps(org.apache.flink.streaming.api.functions.TimestampExtractor)</exclude>
-							<exclude>org.apache.flink.streaming.api.scala.ConnectedStreams#keyBy(scala.Function1,scala.Function1,org.apache.flink.api.common.typeinfo.TypeInformation,org.apache.flink.api.common.typeinfo.TypeInformation)</exclude>
-						</excludes>
-					</parameter>
-				</configuration>
-				<executions>
-					<execution>
-						<phase>verify</phase>
-						<goals>
-							<goal>cmp</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
-
-			<!-- Generate the test-jar -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-jar-plugin</artifactId>
-				<executions>
-					<execution>
-						<goals>
-							<goal>test-jar</goal>
-						</goals>
-					</execution>
-				</executions>
+				<version>2.4</version><!--$NO-MVN-MAN-VER$-->
+				<configuration>
+					<archive>
+						<!-- Globally exclude maven metadata, because it may accidentally bundle files we don't intend to -->
+						<addMavenDescriptor>false</addMavenDescriptor>
+						<manifest>
+							<addDefaultImplementationEntries>true</addDefaultImplementationEntries>
+							<addDefaultSpecificationEntries>true</addDefaultSpecificationEntries>
+						</manifest>
+					</archive>
+				</configuration>
 			</plugin>
 
 			<plugin>
-				<groupId>org.xolstice.maven.plugins</groupId>
-				<artifactId>protobuf-maven-plugin</artifactId>
-				<version>0.5.1</version>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-assembly-plugin</artifactId>
+				<version>3.0.0</version>
 				<configuration>
-					<!-- proto文件放置的目录 -->
-					<protoSourceRoot>${basedir}/src/main/proto</protoSourceRoot>
-					<protocArtifact>com.google.protobuf:protoc:${protobuf.version}:exe:${os.detected.classifier}</protocArtifact>
-					<!-- 生成文件的目录, 可以让其在源码目录生成， -->
-					 <outputDirectory>${project.basedir}/src/main/java</outputDirectory>
-					<!-- 生成文件前是否把目标目录清空，这个最好设置为false，以免误删项目文件 -->
-					<clearOutputDirectory>false</clearOutputDirectory>
+					<descriptorRefs>
+						<descriptorRef>jar-with-dependencies</descriptorRef>
+					</descriptorRefs>
 				</configuration>
 				<executions>
 					<execution>
+						<id>make-assembly</id>
+						<phase>package</phase>
 						<goals>
-							<goal>compile</goal>
-							<goal>compile-custom</goal>
+							<goal>single</goal>
 						</goals>
 					</execution>
 				</executions>
