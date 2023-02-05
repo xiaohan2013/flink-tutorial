@@ -14,7 +14,8 @@
         <module>flink-rules</module>
 		<module>flink-olap</module>
         <module>flink-etl</module>
-    </modules>
+		<module>data-serving</module>
+	</modules>
 
 	<properties>
 		<maven.compiler.source>8</maven.compiler.source>
@@ -33,6 +34,7 @@
 		<flink.version>1.15.0</flink.version>
 		<sprint.version>5.1.8.RELEASE</sprint.version>
 		<os.detected.classifier>windows-x86_64</os.detected.classifier>
+		<hadoop.version>3.1.3</hadoop.version>
 	</properties>
 
 	<dependencyManagement>
@@ -58,6 +60,11 @@
 			<dependency>
 				<groupId>org.apache.flink</groupId>
 				<artifactId>flink-metrics-core</artifactId>
+				<version>${flink.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.apache.flink</groupId>
+				<artifactId>flink-cep</artifactId>
 				<version>${flink.version}</version>
 			</dependency>
 			<dependency>
@@ -118,11 +125,20 @@
 				<version>${flink.version}</version>
 			</dependency>
 			<dependency>
+				<groupId>org.apache.flink</groupId>
+				<artifactId>flink-cep_${scala.version}</artifactId>
+				<version>${flink.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>mysql</groupId>
+				<artifactId>mysql-connector-java</artifactId>
+				<version>5.1.47</version>
+			</dependency>
+			<dependency>
 				<groupId>org.scala-lang</groupId>
 				<artifactId>scala-reflect</artifactId>
 				<version>${scala.version}</version>
 			</dependency>
-
 			<dependency>
 				<groupId>org.scala-lang</groupId>
 				<artifactId>scala-library</artifactId>
@@ -357,6 +373,30 @@
 				<artifactId>lombok</artifactId>
 				<version>1.18.22</version>
 				<scope>compile</scope>
+			</dependency>
+			<!--如果保存检查点到hdfs上，需要引入此依赖-->
+			<dependency>
+				<groupId>org.apache.hadoop</groupId>
+				<artifactId>hadoop-client</artifactId>
+				<version>${hadoop.version}</version>
+			</dependency>
+			<!--Flink默认使用的是slf4j记录日志，相当于一个日志的接口,这里使用log4j作为具体的日志实现-->
+			<dependency>
+				<groupId>org.slf4j</groupId>
+				<artifactId>slf4j-api</artifactId>
+				<version>1.7.25</version>
+			</dependency>
+
+			<dependency>
+				<groupId>org.slf4j</groupId>
+				<artifactId>slf4j-log4j12</artifactId>
+				<version>1.7.25</version>
+			</dependency>
+
+			<dependency>
+				<groupId>org.apache.logging.log4j</groupId>
+				<artifactId>log4j-to-slf4j</artifactId>
+				<version>2.14.0</version>
 			</dependency>
 		</dependencies>
 	</dependencyManagement>
