@@ -17,7 +17,9 @@
 		<module>data-serving</module>
 		<module>flink-userprofile</module>
         <module>flink-modeling</module>
-    </modules>
+        <module>flink-adhoc</module>
+		<module>flink-analysis</module>
+	</modules>
 
 	<properties>
 		<maven.compiler.source>8</maven.compiler.source>
