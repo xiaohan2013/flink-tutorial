@@ -15,7 +15,9 @@
 		<module>flink-olap</module>
         <module>flink-etl</module>
 		<module>data-serving</module>
-	</modules>
+		<module>flink-userprofile</module>
+        <module>flink-modeling</module>
+    </modules>
 
 	<properties>
 		<maven.compiler.source>8</maven.compiler.source>
